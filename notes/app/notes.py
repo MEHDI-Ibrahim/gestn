@@ -71,13 +71,23 @@ def profHome():
   # else:
   #   return render_template('index.html', msg='Erreur, veuillez consulter votre administration')
 
-@app.route('/profModifier', methods=['GET'])
+@app.route('/profModifier', methods=['GET','POST'])
 def profModifier():
     if request.method == 'GET':
       cursor = mydb.cursor(buffered=True)
       cursor.execute('select etd.username from accountsEtd as etd, notes as nt where etd.username = nt.username and nt.matiere = %s;', (session['matiere'],))
       etudiants = cursor.fetchall()
       return render_template('prf.html', data=etudiants, view=False, modify=True)
+
+    if request.method == 'POST':
+      usernameEtd = request.form.get("etudiant", False)
+      newNote = request.form.get("newNote", False)
+      cursor = mydb.cursor(buffered=True)
+      cursor.execute('update notes set note=%s where username=%s and matiere =%s;', (int(newNote),usernameEtd, session['matiere']))
+      # res = cursor.fetchone()
+      mydb.commit()
+      return render_template('prf.html', view=False, modify=False, msg="Note modifié avec succés!")
+
 
 # mysql> | beverly10@example.com      | 0D9KjD0JG( | Moyer     | Lisa    | prf     | Analyse Numrique |
 
