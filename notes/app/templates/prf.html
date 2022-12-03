@@ -70,20 +70,54 @@ span.psw {
 <h2>Professeur</h2>
 
 
-<form action="{{ url_for('register') }}" id="my-form" method="post">
-    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Avatar" class="avatar">
+<form action="{{ url_for('profModifier') }}" id="formProfModify" method="get">
+      <button type="submit">Modifier les Notes</button>
+</form>
 
-    <div class="container">
-      <label for="uname"><b>Username</b></label>
-      <input id="uname" type="text" placeholder="Enter Username" name="uname" required>
-  
-      <label for="psw"><b>Password</b></label>
-      <input id="psw" type="password" placeholder="Enter Password" name="psw" required>
-          
-      <button type="submit">Login</button>
-      
-    </div>
-  </form>
+<form action="{{ url_for('profView') }}" id="formProfView" method="post">
+  <button type="submit">Consulter les Notes</button>
+</form>
+
+{% block content %}
+    {% if view %}
+<table class="GeneratedTable">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Prenom</th>
+      <th>Note</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in data %}
+    <tr>
+        <td>{{item[0]}}</td>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock content %}
+
+
+{% if modify %}
+<form action="{{ url_for('profModifier') }}" id="formChangerNote" method="post">
+  <label for="etudiant">Etudiant:</label>
+  <p>
+    <select id="etudiant" name="etudiant">
+      {% for item in data %}
+      <option value="{{item[0]}}">{{item[0]}}</option>
+      {% endfor %}
+    </select>
+  </p>
+    <p></p><label for="newNote"><b>Note: </b></label>
+    <input id="newNote" type="number" max="20" min="0" placeholder="Enter la note" name="newNote" required></p>
+  <button type="submit">Changer la Note</button>
+</form>
+{% endif %}
   
   </body>
   </html>

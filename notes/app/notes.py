@@ -29,7 +29,7 @@ def home():
         return redirect('/etudiant')
 
     if session['typeAcc'] == "Professeur":
-        return redirect('/prof')
+        return redirect('/profHome')
     if session['typeAcc'] == "Administration":
         return redirect('/admin')
 
@@ -56,23 +56,42 @@ def etudiant():
 
 
 
-@app.route('/prof')
-def prof():
-  cursor = mydb.cursor(buffered=True)
-  # select etd.username, nt.note from accountsEtd as etd, notes as nt where etd.username = nt.username;
-  cursor.execute('select etd.username, nt.note, nt.matiere from accountsEtd as etd, notes as nt where etd.username = nt.username and nt.matiere = %s;', (session['matiere'],))
-  # Fetch one record and return result
-  # select etd.username, nt.note, nt.matiere from accountsEtd as etd, notes as nt where nt.matiere = 'Reseau' group by etd.username;
-  #8@Vi6PBo#H /  xroman@example.com
-  data = cursor.fetchall()
-  if data:
-    return render_template('prf.html', data=data)
-  else:
-    return render_template('index.html', msg='Erreur, veuillez consulter votre administration')
+@app.route('/profHome' , methods=['GET'])
+def profHome():
+  return render_template('prf.html')
+  # cursor = mydb.cursor(buffered=True)
+  # # select etd.username, nt.note from accountsEtd as etd, notes as nt where etd.username = nt.username;
+  # cursor.execute('select etd.username, nt.note, nt.matiere from accountsEtd as etd, notes as nt where etd.username = nt.username and nt.matiere = %s;', (session['matiere'],))
+  # # Fetch one record and return result
+  # # select etd.username, nt.note, nt.matiere from accountsEtd as etd, notes as nt where nt.matiere = 'Reseau' group by etd.username;
+  # #8@Vi6PBo#H /  xroman@example.com
+  # data = cursor.fetchall()
+  # if data:
+  #   return render_template('prf.html', data=data)
+  # else:
+  #   return render_template('index.html', msg='Erreur, veuillez consulter votre administration')
 
-@app.route('/profModifier')
+@app.route('/profModifier', methods=['GET'])
 def profModifier():
-  pass
+    if request.method == 'GET':
+      cursor = mydb.cursor(buffered=True)
+      cursor.execute('select etd.username from accountsEtd as etd, notes as nt where etd.username = nt.username and nt.matiere = %s;', (session['matiere'],))
+      etudiants = cursor.fetchall()
+      return render_template('prf.html', data=etudiants, view=False, modify=True)
+
+# mysql> | beverly10@example.com      | 0D9KjD0JG( | Moyer     | Lisa    | prf     | Analyse Numrique |
+
+
+@app.route('/profView', methods=['POST'])
+def profView():
+    if request.method == 'POST':
+      cursor = mydb.cursor(buffered=True)
+      cursor.execute('select etd.nom,etd.prenom, nt.note, nt.matiere from accountsEtd as etd, notes as nt where etd.username = nt.username and nt.matiere = %s;', (session['matiere'],))
+      notes = cursor.fetchall()
+      if notes:
+        return render_template('prf.html', data=notes, view=True, modify=False)
+      else:
+        return render_template('prf.html', msg='Erreur')
 
 
 if __name__ == '__main__':
