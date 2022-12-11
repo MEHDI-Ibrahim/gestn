@@ -8,7 +8,7 @@ from faker import Faker
 
 fake = Faker()
 
-conn = mysql.connector.connect(host='127.0.0.1', database='gestn',
+conn = mysql.connector.connect(host='db-service', database='gestn',
                                user='lepoxa', password='lepoxa')
 matieres = ["Cloud Computing", "Reseau", "Statistiques","Communication","Machine Learning","Analyse Numérique"]
 

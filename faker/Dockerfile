@@ -2,9 +2,11 @@ FROM python:3.8-alpine
 
 MAINTAINER Le Grand Poxa
 
-COPY ./app/requirements.txt /app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 WORKDIR /app
+
+ENV WAIT_VERSION 2.7.2
 
 RUN apk add --update \
   && pip install --upgrade pip  \
@@ -13,6 +15,8 @@ RUN apk add --update \
 
 COPY ./app /app
 
-Expose 5050
+Expose 5555
 
-CMD python login.py
+CMD python generate_Fake_Data.py
+CMD python generate_fake_Notes.py
+
