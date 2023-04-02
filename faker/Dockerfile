@@ -1,6 +1,5 @@
 FROM python:3.8-alpine
 
-MAINTAINER Le Grand Poxa
 
 COPY ./requirements.txt /app/requirements.txt
 
@@ -15,8 +14,7 @@ RUN apk add --update \
 
 COPY ./app /app
 
-Expose 5555
+RUN python generate_Fake_Data.py
+RUN python generate_fake_Notes.py
 
-CMD python generate_Fake_Data.py
-CMD python generate_fake_Notes.py
-
+EXPOSE 5555

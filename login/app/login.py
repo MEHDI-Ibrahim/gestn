@@ -4,13 +4,10 @@ import requests
 import os
 from datetime import timedelta
 
-
-
-
 import mysql.connector
 
 mydb = mysql.connector.connect(
-    host="127.0.0.1",
+    host="db-service",
     user="lepoxa",
     password="lepoxa",
     database="gestn"

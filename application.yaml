@@ -1,0 +1,317 @@
+apiVersion: v1
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db-service
+      name: db-service
+    spec:
+      ports:
+        - name: "3306"
+          port: 3306
+          targetPort: 3306
+      selector:
+        io.kompose.service: db-service
+      type: NodePort
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: faker
+      name: faker
+    spec:
+      ports:
+        - name: "3306"
+          port: 3306
+          targetPort: 3306
+      selector:
+        io.kompose.service: faker
+      type: NodePort
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: login
+      name: login
+    spec:
+      ports:
+        - name: "5050"
+          port: 5050
+          targetPort: 5050
+      selector:
+        io.kompose.service: login
+      type: NodePort
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: notes
+      name: notes
+    spec:
+      ports:
+        - name: "5051"
+          port: 5051
+          targetPort: 5051
+      selector:
+        io.kompose.service: notes
+      type: NodePort
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: registry
+      name: registry
+    spec:
+      ports:
+        - name: "5000"
+          port: 5000
+          targetPort: 5000
+      selector:
+        io.kompose.service: registry
+      type: NodePort
+    status:
+      loadBalancer: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db-service
+      name: db-service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: db-service
+      strategy: {}
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o application.yaml
+            kompose.service.type: nodeport
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.network/sample: "true"
+            io.kompose.service: db-service
+        spec:
+          containers:
+            - image: registry/mydb
+              name: db-service
+              ports:
+                - containerPort: 3306
+              resources: {}
+          hostname: db-service
+          restartPolicy: Always
+    status: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      creationTimestamp: null
+      name: sample
+    spec:
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  io.kompose.network/sample: "true"
+      podSelector:
+        matchLabels:
+          io.kompose.network/sample: "true"
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: faker
+      name: faker
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: faker
+      strategy: {}
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o application.yaml
+            kompose.service.type: nodeport
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.network/sample: "true"
+            io.kompose.service: faker
+        spec:
+          containers:
+            - env:
+                - name: WAIT_HOSTS
+                  value: db-service:3306
+                - name: WAIT_HOSTS_TIMEOUT
+                  value: "300"
+                - name: WAIT_HOST_CONNECT_TIMEOUT
+                  value: "30"
+                - name: WAIT_SLEEP_INTERVAL
+                  value: "30"
+              image: registry/faker
+              name: faker
+              ports:
+                - containerPort: 3306
+              resources: {}
+          hostname: faker
+          restartPolicy: Always
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: login
+      name: login
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: login
+      strategy: {}
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o application.yaml
+            kompose.service.type: nodeport
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.network/sample: "true"
+            io.kompose.service: login
+        spec:
+          containers:
+            - image: registry/loginIM
+              name: login
+              ports:
+                - containerPort: 5050
+              resources: {}
+          hostname: login
+          restartPolicy: Always
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: notes
+      name: notes
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: notes
+      strategy: {}
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o application.yaml
+            kompose.service.type: nodeport
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.network/sample: "true"
+            io.kompose.service: notes
+        spec:
+          containers:
+            - image: registry/notesIM
+              name: notes
+              ports:
+                - containerPort: 5051
+              resources: {}
+          hostname: notes
+          restartPolicy: Always
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o application.yaml
+        kompose.service.type: nodeport
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: registry
+      name: registry
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: registry
+      strategy: {}
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -o application.yaml
+            kompose.service.type: nodeport
+            kompose.version: 1.26.0 (40646f47)
+          creationTimestamp: null
+          labels:
+            io.kompose.network/sample: "true"
+            io.kompose.service: registry
+        spec:
+          containers:
+            - image: registry:2
+              name: registry
+              ports:
+                - containerPort: 5000
+              resources: {}
+          restartPolicy: Always
+    status: {}
+kind: List
+metadata: {}
+

@@ -5,7 +5,7 @@ import os
 
 import mysql.connector
 mydb = mysql.connector.connect(
-    host="localhost",
+    host="db-service",
     user="lepoxa",
     password="lepoxa",
     database="gestn"
