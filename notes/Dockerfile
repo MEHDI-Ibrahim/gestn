@@ -1,17 +1,13 @@
 FROM python:3.8-alpine
 
 
-COPY ./app/requirements.txt /app/requirements.txt
-
-WORKDIR /app
+COPY ./notes .
 
 RUN apk add --update \
   && pip install --upgrade pip  \
-  && pip install -r requirements.txt \
+  && pip install -r app/requirements.txt \
   && rm -rf /var/cache/apk/*
 
-COPY ./app /app
+EXPOSE 5051
 
-Expose 5050
-
-CMD python login.py
+CMD python app/notes.py

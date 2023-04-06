@@ -1,6 +1,19 @@
 version: '3.3'  # version of compose format
 
 services:
+  db-service:
+      image: localhost:5000/bd
+      hostname: db-service
+      ports:
+        - 3306:3306  # host:container
+      depends_on:
+        - login   
+        - notes
+                    
+      networks:
+        sample:
+          aliases:
+            - db-service
   login:
     image: localhost:5000/login
     hostname: login
@@ -10,8 +23,6 @@ services:
       sample:
         aliases:
           - login
-    labels:
-      kompose.service.type: nodeport
 
   notes:
     image: localhost:5000/notes
@@ -24,43 +35,6 @@ services:
       sample:
         aliases:
           - login
-    labels:
-      kompose.service.type: nodeport
-  db-service:
-    image: localhost:5000/db
-    hostname: db-service
-    ports:
-      - 3306:3306  # host:container
-    depends_on:
-      - login   
-      - notes
-                   
-    networks:
-      sample:
-        aliases:
-          - db-service
-    labels:
-      kompose.service.type: nodeport
-
-  faker:
-    image: localhost:5000/faker
-    hostname: faker
-    ports:
-      - 3306:3306  # host:container
-    depends_on:
-      - login   
-      - notes
-      - db-service 
-    environment:
-      - WAIT_HOSTS=db-service:3306
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=30
-      - WAIT_HOST_CONNECT_TIMEOUT=30           
-    networks:
-      sample:
-        aliases:
-          - faker
-    labels:
-      kompose.service.type: nodeport
+  
 networks:
   sample:

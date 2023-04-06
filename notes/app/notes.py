@@ -90,13 +90,16 @@ def profModifier():
 
 
 # mysql> | beverly10@example.com      | 0D9KjD0JG( | Moyer     | Lisa    | prf     | Analyse Numrique |
-
+@app.route('/disconnect', methods=['GET'])
+def disconnect():
+    session.clear()
+    return redirect('http://localhost:5050')
 
 @app.route('/profView', methods=['POST'])
 def profView():
     if request.method == 'POST':
       cursor = mydb.cursor(buffered=True)
-      cursor.execute('select etd.nom,etd.prenom, nt.note, nt.matiere from accountsEtd as etd, notes as nt where etd.username = nt.username and nt.matiere = %s;', (session['matiere'],))
+      cursor.execute('select etd.nom,etd.prenom, nt.note, nt.matiere,etd.username from accountsEtd as etd, notes as nt where etd.username = nt.username and nt.matiere = %s;', (session['matiere'],))
       notes = cursor.fetchall()
       if notes:
         return render_template('prf.html', data=notes, view=True, modify=False)

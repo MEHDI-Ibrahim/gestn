@@ -39,7 +39,10 @@ def home():
 # def clrs():
 # 	session.clear()
 # 	return redirect('localhost:5050/')
-
+@app.route('/disconnect', methods=['GET'])
+def disconnect():
+    session.clear()
+    return redirect('http://localhost:5050')
 
 
 @app.route('/register', methods=['POST'])

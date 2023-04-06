@@ -1,16 +1,14 @@
-FROM python:3.8-alpine
+FROM python:alpine
 
-COPY ./app/requirements.txt /app/requirements.txt
+COPY ./login .
 
-WORKDIR /app
 
 RUN apk add --update \
   && pip install --upgrade pip  \
-  && pip install -r requirements.txt \
+  && pip install -r app/requirements.txt \
   && rm -rf /var/cache/apk/*
 
-COPY ./app /app
 
-Expose 5050
+EXPOSE 5050
 
-CMD python login.py
+CMD python app/login.py
